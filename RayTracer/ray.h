@@ -1,0 +1,23 @@
+#pragma once
+
+#ifndef RAY_H
+#define RAY_H
+
+#include "vec3.h"
+#include "point3.h"
+
+class ray {
+private:
+	point3 orig;
+	vec3 dir;
+public:
+	ray(const point3& origin, vec3& direction) : orig(origin), dir(direction) {}
+
+	const point3& origin() const { return orig; }
+	const vec3& direction() const { return dir; }
+
+	// P(t) = A + tb [A: Ray Origin, b: Ray Direction]
+	point3 at(float t) const { return orig + t * dir; }
+};
+
+#endif

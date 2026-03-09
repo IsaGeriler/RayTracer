@@ -127,6 +127,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="colour.h" />
+    <ClInclude Include="point3.h" />
+    <ClInclude Include="ray.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
