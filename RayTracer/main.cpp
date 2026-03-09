@@ -1,10 +1,22 @@
 #include <iostream>
 
 #include "colour.h"
+#include "point3.h"
 #include "ray.h"
 #include "vec3.h"
 
+static bool intersect_sphere(const vec3& center, float radius, const ray& r) {
+	vec3 oc = center - r.origin();
+	float a = dot(r.direction(), r.direction());
+	float b = -2.f * dot(r.direction(), oc);
+	float c = dot(oc, oc) - radius * radius;
+	float delta = b * b - 4 * a * c;
+	return delta >= 0.f;
+}
+
 static colour ray_colour(const ray& r) {
+	if (intersect_sphere(point3(0, 0, -1), 0.5f, r))
+		return colour(1, 0, 0);
 	vec3 unit_dir = unit(r.direction());
 	float a = 0.5f * (unit_dir.y + 1.f);
 	return (1.f - a) * colour(1.f, 1.f, 1.f) + a * colour(0.5f, 0.7f, 1.f);
@@ -13,7 +25,7 @@ static colour ray_colour(const ray& r) {
 int main(int argc, char** argv) {
 	// Rendered Image Setup
 	float aspect_ratio = 16.f / 9.f;
-	unsigned int image_width = 400;
+	unsigned int image_width = 1024;
 
 	// Calculate Image Height
 	unsigned int image_height = int(image_width / aspect_ratio);
