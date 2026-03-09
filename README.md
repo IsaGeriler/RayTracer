@@ -1,6 +1,6 @@
 # RayTracer
 ## Current State
-<img width="400" height="225" alt="download" src="https://github.com/user-attachments/assets/6cfe4ac7-4511-4741-a15c-e86370a884d9" />
+![RayTracerStatus](https://github.com/user-attachments/assets/f09efc49-4b28-4cf1-ab5b-e6294f08f006)
 
 ## Citations
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
