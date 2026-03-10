@@ -52,11 +52,13 @@ private:
 		return ray(ray_orig, ray_dir);
 	}
 
-	colour ray_colour(const ray& r, const hittable& world) const {
+	colour ray_colour(const ray& r, unsigned int depth, const hittable& world) const {
+		if (depth <= 0) return colour(0.f, 0.f, 0.f);
+		
 		hit_record rec;
 		if (world.hit(r, interval(0.f, inf), rec)) {
 			vec3 dir = random_on_hemisphere(rec.normal);
-			return 0.5f * ray_colour(ray(rec.p, dir), world);
+			return 0.5f * ray_colour(ray(rec.p, dir), depth - 1, world);
 		}
 
 		vec3 unit_dir = unit_vector(r.direction());
@@ -68,6 +70,7 @@ public:
 	float aspect_ratio = 1.f;
 	unsigned int image_width = 100;
 	unsigned int samples_per_pixel = 10;
+	unsigned int max_depth = 10;  // Maximum number of ray bounces into scene
 
 	void render(const hittable& world) {
 		initialize();
@@ -79,7 +82,7 @@ public:
 				colour pixel_colour = (0.f, 0.f, 0.f);
 				for (unsigned int sample = 0; sample < samples_per_pixel; sample++) {
 					ray r = get_ray(_x, _y);
-					pixel_colour += ray_colour(r, world);
+					pixel_colour += ray_colour(r, max_depth, world);
 				}
 				write_colour(std::cout, pixel_samples_scale * pixel_colour);
 			}
