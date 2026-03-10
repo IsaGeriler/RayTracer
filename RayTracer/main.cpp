@@ -29,6 +29,11 @@ int main(int argc, char** argv) {
 	cam.samples_per_pixel = 100;
 	cam.max_depth = 50;
 
+	cam.vertical_fov = 20.f;
+	cam.lookfrom = point3(-2.f, 2.f, 1.f);
+	cam.lookat = point3(0.f, 0.f, -1.f);
+	cam.vup = vec3(0.f, 1.f, 0.f);
+
 	// Render Scene
 	cam.render(world);
 }

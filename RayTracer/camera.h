@@ -12,6 +12,7 @@ private:
 	float pixel_samples_scale;  // Color scale factor for a sum of pixel samples 
 	point3 center, pixel_upper_left;
 	vec3 pixel_du, pixel_dv;
+	vec3 u, v, w;  // Camera frame basis vectors
 
 	void initialize() {
 		// Calculate Image Height
@@ -21,20 +22,27 @@ private:
 		pixel_samples_scale = 1.f / samples_per_pixel;
 
 		// Camera
-		center = point3(0.f, 0.f, 0.f);
-		float focal_length = 1.f;
-		float viewport_height = 2.f;
+		center = lookfrom;
+		float focal_length = (lookfrom - lookat).length();
+		float theta = to_radian(vertical_fov);
+		float h = std::tanf(theta * 0.5f);
+		float viewport_height = 2.f * h * focal_length;
 		float viewport_width = viewport_height * (float(image_width) / image_height);
+
+		// Calculate basis vectors
+		w = unit_vector(lookfrom - lookat);
+		u = unit_vector(cross(vup, w));
+		v = cross(w, u);
 		
 		// Calculate vertical and horizontal viewport edge vectors
-		vec3 viewport_u = vec3(viewport_width, 0.f, 0.f);
-		vec3 viewport_v = vec3(0.f, -viewport_height, 0.f);
+		vec3 viewport_u = viewport_width * u;
+		vec3 viewport_v = viewport_height * -v;
 
 		// Calculate horizontal and vertical differences
 		pixel_du = viewport_u / image_width;
 		pixel_dv = viewport_v / image_height;
 
-		auto viewport_upper_left = center - vec3(0.f, 0.f, focal_length) - (viewport_u / 2) - (viewport_v / 2);
+		auto viewport_upper_left = center - (focal_length * w) - (viewport_u / 2) - (viewport_v / 2);
 		pixel_upper_left = viewport_upper_left + 0.5f * (pixel_du + pixel_dv);
 	}
 
@@ -75,6 +83,11 @@ public:
 	unsigned int image_width = 100;
 	unsigned int samples_per_pixel = 10;
 	unsigned int max_depth = 10;  // Maximum number of ray bounces into scene
+
+	float vertical_fov = 90.f;  // Vertical field of view
+	point3 lookfrom = point3(0.f, 0.f, 0.f);
+	point3 lookat = point3(0.f, 0.f, -1.f);
+	vec3 vup = vec3(0.f, 1.f, 0.f);
 
 	void render(const hittable& world) {
 		initialize();
