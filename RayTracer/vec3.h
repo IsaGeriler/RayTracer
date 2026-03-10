@@ -44,6 +44,8 @@ public:
 	float length() const { return sqrtf(legth_squared()); }
 	float legth_squared() const { return ((x * x) + (y * y) + (z * z)); }
 
+	bool near_zero() const { return (std::fabs(x) < 1e-8f) && (std::fabs(y) < 1e-8f) && (std::fabs(z) < 1e-8f); }
+
 	static vec3 random_vector() { return vec3(random_float(), random_float(), random_float()); }
 	static vec3 random_vector(float min, float max) { return vec3(random_float(min, max), random_float(min, max), random_float(min, max)); }
 };

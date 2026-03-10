@@ -4,6 +4,7 @@
 #define CAMERA_H
 
 #include "hittable.h"
+#include "material.h"
 
 class camera {
 private:
@@ -57,8 +58,11 @@ private:
 		
 		hit_record rec;
 		if (world.hit(r, interval(0.001f, inf), rec)) {
-			vec3 dir = rec.normal + random_unit_vector();
-			return 0.5f * ray_colour(ray(rec.p, dir), depth - 1, world);
+			ray scattered;
+			colour attenuation;
+			if (rec.mat->scatter(r, rec, attenuation, scattered))
+				return attenuation * ray_colour(scattered, depth - 1, world);
+			return colour(0.f, 0.f, 0.f);
 		}
 
 		vec3 unit_dir = unit_vector(r.direction());

@@ -48,13 +48,17 @@ inline vec3 random_unit_vector() {
 	while (true) {
 		vec3 p = vec3::random_vector(-1.f, 1.f);
 		float length_squared = p.legth_squared();
-		if (1e-38 < length_squared && length_squared < 1.f) return p / sqrtf(length_squared);
+		if (1e-38f < length_squared && length_squared < 1.f) return p / sqrtf(length_squared);
 	}
 }
 
 inline vec3 random_on_hemisphere(const vec3& normal) {
 	vec3 on_unit_sphere = random_unit_vector();
 	return (dot(on_unit_sphere, normal) > 0.f) ? on_unit_sphere : -on_unit_sphere;
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) {
+	return v - 2 * dot(v, n) * n;
 }
 
 #endif
