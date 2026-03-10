@@ -11,6 +11,7 @@ public:
 	interval(float _min, float _max) : min(_min), max(_max) {}
 
 	float size() const { return max - min; }
+	float clamp(float x) const { return std::fmin(max, std::fmax(x, min)); }
 	bool contains(float x) const { return min <= x && x <= max; }
 	bool surrounds(float x) const { return min < x && x < max; }
 
