@@ -23,9 +23,9 @@ public:
 		if (delta < 0.f) return false;
 
 		// Find the nearest root between t_min and t_max
-		float root =  (h - std::sqrt(delta)) / a;
+		float root =  (h - std::sqrtf(delta)) / a;
 		if (!ray_t.surrounds(root)) {
-			root = (h + std::sqrt(delta)) / a;
+			root = (h + std::sqrtf(delta)) / a;
 			if (!ray_t.surrounds(root)) return false;
 		}
 

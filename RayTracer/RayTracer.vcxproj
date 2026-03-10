@@ -126,6 +126,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="colour.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="hittable.h" />
