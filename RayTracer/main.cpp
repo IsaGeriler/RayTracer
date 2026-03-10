@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "bvh.h"
 #include "camera.h"
 #include "hittable.h"
 #include "hittable_list.h"
@@ -21,6 +22,7 @@ static void scene1() {
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.5f, material_left));
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.4f, material_bubble));
 	world.add(std::make_shared<sphere>(point3(1.f, 0.f, -1.f), 0.5f, material_right));
+    world = hittable_list(std::make_shared<bvh_node>(world));
 
 	// Camera Setup
 	camera cam;
@@ -88,11 +90,13 @@ static void scene2() {
     auto material3 = std::make_shared<metal>(colour(0.7, 0.6, 0.5), 0.0);
     world.add(std::make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
+    world = hittable_list(std::make_shared<bvh_node>(world));
+
     camera cam;
 
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = 400;
-    cam.samples_per_pixel = 100;
+    cam.image_width = 1200;
+    cam.samples_per_pixel = 500;
     cam.max_depth = 50;
 
     cam.vertical_fov = 20;
