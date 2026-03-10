@@ -8,10 +8,19 @@
 
 using colour = vec3;
 
+inline float to_gamma(float linear_comp) {
+	return (linear_comp > 0) ? std::sqrtf(linear_comp) : 0.f;
+}
+
 void write_colour(std::ostream& out, const colour& pixelColour) {
 	float r = pixelColour.x;
 	float g = pixelColour.y;
 	float b = pixelColour.z;
+
+	// Apply gamma transform for gamma 2
+	r = to_gamma(r);
+	g = to_gamma(g);
+	b = to_gamma(b);
 
 	// Convers [0, 1] component values to the byte range [0, 255]
 	static const interval intensity(0.f, 0.999f);
