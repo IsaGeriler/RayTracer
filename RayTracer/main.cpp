@@ -7,7 +7,9 @@
 
 static colour ray_colour(const ray& r, const hittable& world) {
 	hit_record rec;
-	if (world.hit(r, 0.f, inf, rec)) return 0.5f * (rec.normal + colour(1.f, 1.f, 1.f));
+	if (world.hit(r, interval(0.f, inf), rec)) {
+		return 0.5f * (rec.normal + colour(1.f, 1.f, 1.f));
+	}
 	
 	vec3 unit_dir = unit(r.direction());
 	float a = 0.5f * (unit_dir.y + 1.f);

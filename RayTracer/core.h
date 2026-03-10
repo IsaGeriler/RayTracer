@@ -11,6 +11,7 @@
 
 // Common Headers
 #include "colour.h"
+#include "interval.h"
 #include "point3.h"
 #include "ray.h"
 #include "vec3.h"

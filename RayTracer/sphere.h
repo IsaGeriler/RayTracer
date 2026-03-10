@@ -13,7 +13,7 @@ private:
 public:
 	sphere(const point3& _center, float _radius) : center(_center), radius(std::fmax(0, _radius)) {}
 	
-	bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
+	bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
 		vec3 oc = center - r.origin();
 		float a = dot(r.direction(), r.direction());
 		float h = dot(r.direction(), oc);
@@ -24,9 +24,9 @@ public:
 
 		// Find the nearest root between t_min and t_max
 		float root =  (h - std::sqrt(delta)) / a;
-		if (root <= t_min || root >= t_max) {
+		if (!ray_t.surrounds(root)) {
 			root = (h + std::sqrt(delta)) / a;
-			if (root <= t_min || root >= t_max) return false;
+			if (!ray_t.surrounds(root)) return false;
 		}
 
 		rec.t = root;

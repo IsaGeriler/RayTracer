@@ -130,6 +130,7 @@
     <ClInclude Include="core.h" />
     <ClInclude Include="hittable.h" />
     <ClInclude Include="hittable_list.h" />
+    <ClInclude Include="interval.h" />
     <ClInclude Include="point3.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="sphere.h" />
