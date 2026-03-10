@@ -15,6 +15,11 @@ public:
 	bool contains(float x) const { return min <= x && x <= max; }
 	bool surrounds(float x) const { return min < x && x < max; }
 
+	interval expand(float delta) const {
+		float padding = delta / 2.f;
+		return interval(min - padding, max + padding);
+	}
+
 	static const interval empty, universe;
 };
 

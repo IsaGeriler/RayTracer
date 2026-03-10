@@ -23,7 +23,7 @@ public:
 		// Catch degenerate scatter direction
 		if (scatter_dir.near_zero()) scatter_dir = rec.normal;
 
-		scattered = ray(rec.p, scatter_dir);
+		scattered = ray(rec.p, scatter_dir, r.time());
 		attenuation = albedo;
 		return true;
 	}
@@ -39,7 +39,7 @@ public:
 	bool scatter(const ray& r, const hit_record& rec, colour& attenuation, ray& scattered) const override {
 		vec3 reflected = reflect(r.direction(), rec.normal);
 		reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
-		scattered = ray(rec.p, reflected);
+		scattered = ray(rec.p, reflected, r.time());
 		attenuation = albedo;
 		return (dot(scattered.direction(), rec.normal) > 0.f);
 	}
@@ -69,7 +69,7 @@ public:
 
 		bool cannot_refract = ri * sin_theta > 1.f;
 		vec3 dir = (cannot_refract || reflectance(cos_theta, ri) > random_float()) ? reflect(unit_dir, rec.normal) : refract(unit_dir, rec.normal, ri);
-		scattered = ray(rec.p, dir);
+		scattered = ray(rec.p, dir, r.time());
 		return true;
 	}
 };

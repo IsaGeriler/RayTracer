@@ -67,7 +67,8 @@ private:
 		point3 pixel_sample = pixel_upper_left + ((_x + offset.x) * pixel_du) + ((_y + offset.y) * pixel_dv);
 		point3 ray_orig = (defocus_angle <= 0) ? center : defocus_disk_sample();
 		point3 ray_dir = pixel_sample - ray_orig;
-		return ray(ray_orig, ray_dir);
+		float ray_time = random_float();
+		return ray(ray_orig, ray_dir, ray_time);
 	}
 
 	colour ray_colour(const ray& r, unsigned int depth, const hittable& world) const {

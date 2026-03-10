@@ -8,14 +8,23 @@
 
 class sphere : public hittable {
 private:
-	point3 center;
+	ray center;
 	float radius;
 	std::shared_ptr<material> mat;
+	aabb bbox;
 public:
-	sphere(const point3& _center, float _radius, std::shared_ptr<material> _mat) : center(_center), radius(std::fmax(0, _radius)), mat(_mat) {}
+	// Stationary Sphere
+	sphere(const point3& static_center, float _radius, std::shared_ptr<material> _mat) 
+		: center(static_center, vec3(0.f, 0.f, 0.f)), radius(std::fmax(0, _radius)), mat(_mat) {}
 	
+	// Moving Sphere
+	sphere(const point3& center_1, const point3& center_2, float _radius, std::shared_ptr<material> _mat)
+		: center(center_1, center_2 - center_1), radius(std::fmax(0, _radius)), mat(_mat) {}
+
+
 	bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-		vec3 oc = center - r.origin();
+		point3 current_center = center.at(r.time());
+		vec3 oc = current_center - r.origin();
 		float a = dot(r.direction(), r.direction());
 		float h = dot(r.direction(), oc);
 		float c = oc.legth_squared() - radius * radius;
@@ -32,12 +41,14 @@ public:
 
 		rec.t = root;
 		rec.p = r.at(rec.t);
-		vec3 outward_normal = (rec.p - center) / radius;
+		vec3 outward_normal = (rec.p - current_center) / radius;
 		rec.set_face_normal(r, outward_normal);
 		rec.mat = mat;
 
 		return true;
 	}
+
+	// aabb bounding_box() const override { return bbox; }
 };
 
 #endif
