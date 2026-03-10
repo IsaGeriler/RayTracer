@@ -1,13 +1,10 @@
 # RayTracer
 ## Current State
-![RTShinyMetal](https://github.com/user-attachments/assets/31cbe029-eeb7-4d10-83f5-9ed4cff6dabd)
-*Figure 1: Shiny Metal*
+![RTFov90](https://github.com/user-attachments/assets/963d7054-8903-4edf-93cf-6ac00c5f181b)
+*Figure 1 - FOV: 90 degrees*
 
-![RTShinyMetalFuzzy](https://github.com/user-attachments/assets/92f6686d-2a9b-4f57-a1d3-171bae10fc73)
-*Figure 2: Shiny Metal with Fuzzy Reflections*
-
-![RTHollowGlass](https://github.com/user-attachments/assets/e470f5f9-3900-4f63-8421-35efdce314ee)
-*Figure 3: A hollow glass sphere*
+![RTFov20](https://github.com/user-attachments/assets/33724a7d-f3b3-4363-afa4-86e4a1f4c349)
+*Figure 2 - FOV: 20 degrees*
 
 ## Citations
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
