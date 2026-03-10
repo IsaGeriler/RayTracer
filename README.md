@@ -6,7 +6,7 @@
 ![RTShinyMetalFuzzy](https://github.com/user-attachments/assets/92f6686d-2a9b-4f57-a1d3-171bae10fc73)
 *Figure 2: Shiny Metal with Fuzzy Reflections*
 
-![RTHollowGlass](https://github.com/user-attachments/assets/ff8cfa8e-4795-4c0c-bf17-1761974ccd1a)
+![RTHollowGlass](https://github.com/user-attachments/assets/e470f5f9-3900-4f63-8421-35efdce314ee)
 *Figure 3: A hollow glass sphere*
 
 ## Citations
