@@ -45,4 +45,33 @@ public:
 	}
 };
 
+class dialectric : public material {
+private:
+	float refraction_index;
+
+	static float reflectance(float cos_theta, float _refraction_index) {
+		// Schlick's approximation for reflectance
+		float r0 = (1.f - _refraction_index) / (1.f + _refraction_index);
+		r0 *= r0;
+		return r0 + (1.f - r0) * std::powf(1.f - cos_theta, 5);
+	}
+public:
+	dialectric(float _refraction_index) : refraction_index(_refraction_index) {}
+
+	bool scatter(const ray& r, const hit_record& rec, colour& attenuation, ray& scattered) const override {
+		attenuation = colour(1.f, 1.f, 1.f);
+		float ri = rec.front_face ? (1.f / refraction_index) : refraction_index;
+
+		vec3 unit_dir = unit_vector(r.direction());
+
+		float cos_theta = std::fmin(dot(-unit_dir, rec.normal), 1.f);
+		float sin_theta = std::sqrtf(1.f - cos_theta * cos_theta);
+
+		bool cannot_refract = ri * sin_theta > 1.f;
+		vec3 dir = (cannot_refract || reflectance(cos_theta, ri) > random_float()) ? reflect(unit_dir, rec.normal) : refract(unit_dir, rec.normal, ri);
+		scattered = ray(rec.p, dir);
+		return true;
+	}
+};
+
 #endif

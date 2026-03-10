@@ -61,4 +61,12 @@ inline vec3 reflect(const vec3& v, const vec3& n) {
 	return v - 2 * dot(v, n) * n;
 }
 
+inline vec3 refract(const vec3& uv, const vec3& n, float etai_over_eta) {
+	// Snell's Law
+	float cos_theta = std::fmin(dot(-uv, n), 1.f);
+	vec3 r_out_perpendicular = etai_over_eta * (uv + cos_theta * n);
+	vec3 r_out_parallel = -std::sqrtf(std::fabs(1.f - r_out_perpendicular.legth_squared())) * n;
+	return r_out_perpendicular + r_out_parallel;
+}
+
 #endif
