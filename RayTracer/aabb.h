@@ -10,10 +10,17 @@ public:
 
 	aabb() {}
 	aabb(interval _x, interval _y, interval _z) : x(_x), y(_y), z(_z) {}
+
 	aabb(const point3& a, const point3& b) {
 		x = (a.x <= b.x) ? interval(a.x, b.x) : interval(b.x, a.x);
 		y = (a.y <= b.y) ? interval(a.y, b.y) : interval(b.y, a.y);
 		z = (a.z <= b.z) ? interval(a.z, b.z) : interval(b.z, a.z);
+	}
+
+	aabb(const aabb& box0, const aabb& box1) {
+		x = interval(box0.x, box1.x);
+		y = interval(box0.y, box1.y);
+		z = interval(box0.z, box1.z);
 	}
 
 	const interval& axis_interval(int n) const {

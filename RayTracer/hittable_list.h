@@ -5,17 +5,24 @@
 
 #include <vector>
 
+#include "aabb.h"
 #include "core.h"
 #include "hittable.h"
 
 class hittable_list : public hittable {
+private:
+	aabb bbox;
 public:
 	std::vector<std::shared_ptr<hittable>> objects;
 
 	hittable_list() {}
 	hittable_list(std::shared_ptr<hittable> object) { add(object); }
 
-	void add(std::shared_ptr<hittable> object) { objects.emplace_back(object); }
+	void add(std::shared_ptr<hittable> object) {
+		objects.emplace_back(object);
+		bbox = aabb(bbox, object->bounding_box());
+	}
+
 	void clear() { objects.clear(); }
 
 	bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
@@ -32,6 +39,8 @@ public:
 		}
 		return hit_anything;
 	}
+
+	aabb bounding_box() const { return bbox; }
 };
 
 #endif
