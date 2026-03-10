@@ -1,7 +1,7 @@
 # RayTracer
 ## Current State
-![RayTracerStatusAA](https://github.com/user-attachments/assets/22c50de3-fb84-48ef-9179-2ada5a8912a4)
-Figure - Antialiased render of normals-colored sphere with ground
+![RayTracerStatusAADiffuse](https://github.com/user-attachments/assets/ed8a36fc-8340-4f88-a332-be2b8790981c)
+Figure - Render of a simple diffuse material sphere
 
 ## Citations
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
