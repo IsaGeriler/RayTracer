@@ -9,5 +9,8 @@
 ![RTDOF](https://github.com/user-attachments/assets/f735944e-e39c-4a22-959b-995c38db234d)
 *Figure 3 - FOV: 20 degrees, Depth-of-Field*
 
+![RTOWKNDFinal](https://github.com/user-attachments/assets/510264be-084a-4727-be27-a5169561c71f)
+*Figure 4 - Final Scene*
+
 ## Citations
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
