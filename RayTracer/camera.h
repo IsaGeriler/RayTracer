@@ -57,7 +57,7 @@ private:
 		
 		hit_record rec;
 		if (world.hit(r, interval(0.001f, inf), rec)) {
-			vec3 dir = random_on_hemisphere(rec.normal);
+			vec3 dir = rec.normal + random_unit_vector();
 			return 0.5f * ray_colour(ray(rec.p, dir), depth - 1, world);
 		}
 
