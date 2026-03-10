@@ -3,8 +3,7 @@
 #ifndef COLOUR_H
 #define COLOUR_H
 
-#include <iostream>
-
+#include "core.h"
 #include "vec3.h"
 
 using colour = vec3;

@@ -1,27 +1,13 @@
 #include <iostream>
 
-#include "colour.h"
-#include "point3.h"
-#include "ray.h"
-#include "vec3.h"
+#include "core.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
 
-static float hit_sphere(const vec3& center, float radius, const ray& r) {
-	vec3 oc = center - r.origin();
-	float a = dot(r.direction(), r.direction());
-	float b = -2.f * dot(r.direction(), oc);
-	float c = dot(oc, oc) - radius * radius;
-	float delta = b * b - 4 * a * c;
-
-	if (delta < 0.f) return -1.f;
-	else return (-b - std::sqrt(delta)) / (2.f * a);
-}
-
-static colour ray_colour(const ray& r) {
-	auto t = hit_sphere(point3(0, 0, -1), 0.5f, r);
-	if (t > 0.f) {
-		vec3 n = unit(r.at(t) - vec3(0, 0, -1));
-		return 0.5f * colour(n.x + 1, n.y + 1, n.z + 1);
-	}
+static colour ray_colour(const ray& r, const hittable& world) {
+	hit_record rec;
+	if (world.hit(r, 0.f, inf, rec)) return 0.5f * (rec.normal + colour(1.f, 1.f, 1.f));
 	
 	vec3 unit_dir = unit(r.direction());
 	float a = 0.5f * (unit_dir.y + 1.f);
@@ -37,6 +23,11 @@ int main(int argc, char** argv) {
 	unsigned int image_height = int(image_width / aspect_ratio);
 	image_height = (image_height < 1) ? 1 : image_height;
 
+	// World
+	hittable_list world;
+	world.add(std::make_shared<sphere>(point3(0.f, -100.5f, -1.f), 100.f));
+	world.add(std::make_shared<sphere>(point3(0.f, 0.f, -1.f), 0.5f));
+	
 	// Camera
 	float focal_length = 1.f;
 	float viewport_height = 2.f;
@@ -64,7 +55,7 @@ int main(int argc, char** argv) {
 			auto ray_direction = pixel_center - camera_center;
 			
 			ray r(camera_center, ray_direction);
-			colour pixel_colour = ray_colour(r);
+			colour pixel_colour = ray_colour(r, world);
 			
 			write_colour(std::cout, pixel_colour);
 		}
