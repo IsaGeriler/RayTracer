@@ -13,6 +13,7 @@ private:
 	point3 center, pixel_upper_left;
 	vec3 pixel_du, pixel_dv;
 	vec3 u, v, w;  // Camera frame basis vectors
+	vec3 defocus_disk_u, defocus_disk_v;  // Defocus disks
 
 	void initialize() {
 		// Calculate Image Height
@@ -23,10 +24,9 @@ private:
 
 		// Camera
 		center = lookfrom;
-		float focal_length = (lookfrom - lookat).length();
 		float theta = to_radian(vertical_fov);
 		float h = std::tanf(theta * 0.5f);
-		float viewport_height = 2.f * h * focal_length;
+		float viewport_height = 2.f * h * focus_dist;
 		float viewport_width = viewport_height * (float(image_width) / image_height);
 
 		// Calculate basis vectors
@@ -42,8 +42,17 @@ private:
 		pixel_du = viewport_u / image_width;
 		pixel_dv = viewport_v / image_height;
 
-		auto viewport_upper_left = center - (focal_length * w) - (viewport_u / 2) - (viewport_v / 2);
+		auto viewport_upper_left = center - (focus_dist * w) - (viewport_u / 2) - (viewport_v / 2);
 		pixel_upper_left = viewport_upper_left + 0.5f * (pixel_du + pixel_dv);
+
+		float defocus_radius = focus_dist * std::tanf(to_radian(defocus_angle * 0.5f));
+		defocus_disk_u = u * defocus_radius;
+		defocus_disk_v = v * defocus_radius;
+	}
+
+	point3 defocus_disk_sample() const {
+		point3 p = random_in_unit_disk();
+		return center + (p.x * defocus_disk_u) + (p.y * defocus_disk_v);
 	}
 
 	vec3 sample_square() const {
@@ -52,11 +61,11 @@ private:
 	}
 
 	ray get_ray(int _x, int _y) const {
-		// Construct a camera ray originating from the origin and directed at ramdomly
-		// sampled point around the pixel location (_x, _y)
+		// Construct a camera ray originating from the defocus disc and
+		// directed at ramdomly sampled point around the pixel location (_x, _y)
 		vec3 offset = sample_square();
 		point3 pixel_sample = pixel_upper_left + ((_x + offset.x) * pixel_du) + ((_y + offset.y) * pixel_dv);
-		point3 ray_orig = center;
+		point3 ray_orig = (defocus_angle <= 0) ? center : defocus_disk_sample();
 		point3 ray_dir = pixel_sample - ray_orig;
 		return ray(ray_orig, ray_dir);
 	}
@@ -88,6 +97,9 @@ public:
 	point3 lookfrom = point3(0.f, 0.f, 0.f);
 	point3 lookat = point3(0.f, 0.f, -1.f);
 	vec3 vup = vec3(0.f, 1.f, 0.f);
+
+	float defocus_angle = 0.f;
+	double focus_dist = 10.f;
 
 	void render(const hittable& world) {
 		initialize();

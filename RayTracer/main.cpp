@@ -34,6 +34,9 @@ int main(int argc, char** argv) {
 	cam.lookat = point3(0.f, 0.f, -1.f);
 	cam.vup = vec3(0.f, 1.f, 0.f);
 
+	cam.defocus_angle = 10.f;
+	cam.focus_dist = 3.4f;
+
 	// Render Scene
 	cam.render(world);
 }
