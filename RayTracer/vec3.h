@@ -43,6 +43,9 @@ public:
 
 	float length() const { return sqrtf(legth_squared()); }
 	float legth_squared() const { return ((x * x) + (y * y) + (z * z)); }
+
+	static vec3 random_vector() { return vec3(random_float(), random_float(), random_float()); }
+	static vec3 random_vector(float min, float max) { return vec3(random_float(min, max), random_float(min, max), random_float(min, max)); }
 };
 
 #endif

@@ -39,7 +39,7 @@ private:
 
 	vec3 sample_square() const {
 		// Returns the vector to a random point in the [-.5,-.5]-[.5,.5] unit square
-		return vec3(random() - 0.5f, random() - 0.5f, 0.f);
+		return vec3(random_float() - 0.5f, random_float() - 0.5f, 0.f);
 	}
 
 	ray get_ray(int _x, int _y) const {
@@ -55,10 +55,11 @@ private:
 	colour ray_colour(const ray& r, const hittable& world) const {
 		hit_record rec;
 		if (world.hit(r, interval(0.f, inf), rec)) {
-			return 0.5f * (rec.normal + colour(1.f, 1.f, 1.f));
+			vec3 dir = random_on_hemisphere(rec.normal);
+			return 0.5f * ray_colour(ray(rec.p, dir), world);
 		}
 
-		vec3 unit_dir = unit(r.direction());
+		vec3 unit_dir = unit_vector(r.direction());
 		float a = 0.5f * (unit_dir.y + 1.f);
 		return (1.f - a) * colour(1.f, 1.f, 1.f) + a * colour(0.5f, 0.7f, 1.f);
 	}
