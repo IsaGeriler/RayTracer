@@ -9,7 +9,7 @@
 
 using colour = vec3;
 
-void writeColour(std::ostream& out, const colour& pixelColour) {
+void write_colour(std::ostream& out, const colour& pixelColour) {
 	float r = pixelColour.x;
 	float g = pixelColour.y;
 	float b = pixelColour.z;

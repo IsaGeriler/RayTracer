@@ -5,18 +5,24 @@
 #include "ray.h"
 #include "vec3.h"
 
-static bool intersect_sphere(const vec3& center, float radius, const ray& r) {
+static float hit_sphere(const vec3& center, float radius, const ray& r) {
 	vec3 oc = center - r.origin();
 	float a = dot(r.direction(), r.direction());
 	float b = -2.f * dot(r.direction(), oc);
 	float c = dot(oc, oc) - radius * radius;
 	float delta = b * b - 4 * a * c;
-	return delta >= 0.f;
+
+	if (delta < 0.f) return -1.f;
+	else return (-b - std::sqrt(delta)) / (2.f * a);
 }
 
 static colour ray_colour(const ray& r) {
-	if (intersect_sphere(point3(0, 0, -1), 0.5f, r))
-		return colour(1, 0, 0);
+	auto t = hit_sphere(point3(0, 0, -1), 0.5f, r);
+	if (t > 0.f) {
+		vec3 n = unit(r.at(t) - vec3(0, 0, -1));
+		return 0.5f * colour(n.x + 1, n.y + 1, n.z + 1);
+	}
+	
 	vec3 unit_dir = unit(r.direction());
 	float a = 0.5f * (unit_dir.y + 1.f);
 	return (1.f - a) * colour(1.f, 1.f, 1.f) + a * colour(0.5f, 0.7f, 1.f);
@@ -60,7 +66,7 @@ int main(int argc, char** argv) {
 			ray r(camera_center, ray_direction);
 			colour pixel_colour = ray_colour(r);
 			
-			writeColour(std::cout, pixel_colour);
+			write_colour(std::cout, pixel_colour);
 		}
 	}
 	std::clog << "\rDone.\n";
