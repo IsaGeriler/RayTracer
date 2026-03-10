@@ -56,7 +56,7 @@ private:
 		if (depth <= 0) return colour(0.f, 0.f, 0.f);
 		
 		hit_record rec;
-		if (world.hit(r, interval(0.f, inf), rec)) {
+		if (world.hit(r, interval(0.001f, inf), rec)) {
 			vec3 dir = random_on_hemisphere(rec.normal);
 			return 0.5f * ray_colour(ray(rec.p, dir), depth - 1, world);
 		}
