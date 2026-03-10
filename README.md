@@ -6,5 +6,8 @@
 ![RTShinyMetalFuzzy](https://github.com/user-attachments/assets/92f6686d-2a9b-4f57-a1d3-171bae10fc73)
 *Figure 2: Shiny Metal with Fuzzy Reflections*
 
+![RTHollowGlass](https://github.com/user-attachments/assets/ff8cfa8e-4795-4c0c-bf17-1761974ccd1a)
+*Figure 3: A hollow glass sphere*
+
 ## Citations
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
