@@ -45,7 +45,7 @@ public:
 	}
 };
 
-class dialectric : public material {
+class dielectric : public material {
 private:
 	float refraction_index;
 
@@ -56,7 +56,7 @@ private:
 		return r0 + (1.f - r0) * std::powf(1.f - cos_theta, 5);
 	}
 public:
-	dialectric(float _refraction_index) : refraction_index(_refraction_index) {}
+	dielectric(float _refraction_index) : refraction_index(_refraction_index) {}
 
 	bool scatter(const ray& r, const hit_record& rec, colour& attenuation, ray& scattered) const override {
 		attenuation = colour(1.f, 1.f, 1.f);
