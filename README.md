@@ -5,9 +5,9 @@
 _Figure 1 - Evolution of the Ray Tracer so far_
 
 
-![RTMB](https://github.com/user-attachments/assets/3349348c-c55e-4e1a-b02e-86fa7540a170)
+![RTMB](https://github.com/user-attachments/assets/282ecbe0-a3b2-42c9-b94f-dedb65eff8a5)
 
-*Figure 2 - Motion Blur added (lowered resolution to speed up rendering for quick output)*
+_Figure 2 - Motion Blur added (BVH applied)_
 
 ## Citations
 [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
