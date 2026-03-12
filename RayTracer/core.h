@@ -17,8 +17,8 @@ const float pi = 3.1415927f;
 
 // Utility Functions
 inline float random_float() {
-	static std::uniform_real_distribution<float> dist(0.f, 1.f);
-	static std::mt19937 gen;
+	thread_local static std::uniform_real_distribution<float> dist(0.f, 1.f);
+	thread_local static std::mt19937 gen;
 	return dist(gen);
 }
 

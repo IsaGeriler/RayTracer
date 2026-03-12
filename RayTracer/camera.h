@@ -3,6 +3,10 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <mutex>
+#include <thread>
+#include <vector>
+
 #include "hittable.h"
 #include "material.h"
 
@@ -93,6 +97,7 @@ public:
 	unsigned int image_width = 100;
 	unsigned int samples_per_pixel = 10;
 	unsigned int max_depth = 10;  // Maximum number of ray bounces into scene
+	std::mutex mtx;
 
 	float vertical_fov = 90.f;  // Vertical field of view
 	point3 lookfrom = point3(0.f, 0.f, 0.f);
@@ -104,17 +109,49 @@ public:
 
 	void render(const hittable& world) {
 		initialize();
-		std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+		
+		// Multithreading
+		unsigned int threads = std::thread::hardware_concurrency();
+		if (threads == 0) threads = 6;
+		unsigned int rows_per_thread = image_height / threads;
 
-		for (unsigned int _y = 0; _y < image_height; _y++) {
-			std::clog << "\rScanlines remaining: " << (image_height - _y) << ' ' << std::flush;
-			for (unsigned int _x = 0; _x < image_width; _x++) {
-				colour pixel_colour = (0.f, 0.f, 0.f);
-				for (unsigned int sample = 0; sample < samples_per_pixel; sample++) {
-					ray r = get_ray(_x, _y);
-					pixel_colour += ray_colour(r, max_depth, world);
+		std::vector<std::thread> workers;
+		std::vector<colour> frame_buffer;
+		frame_buffer.resize(image_width * image_height);
+
+		auto render_scanlines = [&](size_t start, size_t end, unsigned int thread_id) {
+			for (size_t line = start; line < end; line++) {
+				// Using mutex for remaining scanlines logging
+				{
+					std::lock_guard<std::mutex> lock(mtx);
+					std::clog << "\rScanlines remaining [Thread #" << thread_id << "]:" << (end - line) << ' ' << '\n' << std::flush;
 				}
-				write_colour(std::cout, pixel_samples_scale * pixel_colour);
+				
+				for (unsigned int _x = 0; _x < image_width; _x++) {
+					colour pixel_colour(0.f, 0.f, 0.f);
+					for (unsigned int sample = 0; sample < samples_per_pixel; sample++) {
+						ray r = get_ray(_x, line);
+						pixel_colour += ray_colour(r, max_depth, world);
+					}
+					frame_buffer[line * image_width + _x] = pixel_samples_scale * pixel_colour;
+				}
+			}
+		};
+
+		for (unsigned int t = 0; t < threads; t++) {
+			size_t start = t * rows_per_thread;
+			size_t end = (t == threads - 1) ? image_height : (start + rows_per_thread);
+			workers.emplace_back(render_scanlines, start, end, t);
+		}
+		
+		for (auto& w : workers) {
+			w.join();
+		}
+
+		std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+		for (unsigned int _y = 0; _y < image_height; _y++) {
+			for (unsigned int _x = 0; _x < image_width; _x++) {
+				write_colour(std::cout, frame_buffer[_y * image_width + _x]);
 			}
 		}
 		std::clog << "\rDone.\n";
