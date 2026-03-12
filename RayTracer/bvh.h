@@ -57,7 +57,15 @@ public:
 			right_child = objects[start + 1];
 		}
 		else {
-			std::sort(std::execution::par, std::begin(objects) + start, std::begin(objects) + end, comparator);
+			// Check whether it's worth it to run std::sort in parallel with execution policies
+			if (object_span > 10000) {
+				// High object count, worth parallelising
+				std::sort(std::execution::par, std::begin(objects) + start, std::begin(objects) + end, comparator);
+			}
+			else {
+				// Low object count, not worth the overhead (will actually decrease performance)
+				std::sort(std::begin(objects) + start, std::begin(objects) + end, comparator);
+			}
 			auto mid = start + object_span / 2;
 			left_child = std::make_shared<bvh_node>(objects, start, mid);
 			right_child = std::make_shared<bvh_node>(objects, mid, end);

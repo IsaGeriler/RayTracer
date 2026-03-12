@@ -22,7 +22,7 @@ static void scene1() {
 	world.add(std::make_shared<sphere>(point3(0.f, 0.f, -1.2f), 0.5f, material_center));
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.5f, material_left));
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.4f, material_bubble));
-	world.add(std::make_shared<sphere>(point3(1.f, 0.f, -1.f), 0.5f, material_right));  
+	world.add(std::make_shared<sphere>(point3(1.f, 0.f, -1.f), 0.5f, material_right));
 
     // Start timer to calculate BVH Node Build duration
     auto start_time = std::chrono::high_resolution_clock::now();
