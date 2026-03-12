@@ -27,8 +27,8 @@ static void scene1() {
 	// Camera Setup
 	camera cam;
 	cam.aspect_ratio = 16.f / 9.f;
-	cam.image_width = 1024;
-	cam.samples_per_pixel = 100;
+	cam.image_width = 1200;
+	cam.samples_per_pixel = 500;
 	cam.max_depth = 50;
 
 	cam.vertical_fov = 20.f;

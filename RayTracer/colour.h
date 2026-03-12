@@ -17,6 +17,11 @@ void write_colour(std::ostream& out, const colour& pixelColour) {
 	float g = pixelColour.y;
 	float b = pixelColour.z;
 
+	// Replace NaN components with zero
+	if (r != r) r = 0.f;
+	if (g != g) g = 0.f;
+	if (b != b) b = 0.f;
+
 	// Apply gamma transform for gamma 2
 	r = to_gamma(r);
 	g = to_gamma(g);
