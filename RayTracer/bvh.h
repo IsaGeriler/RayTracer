@@ -3,6 +3,7 @@
 #define BVH_H
 
 #include <algorithm>
+#include <chrono>
 #include <execution>
 
 #include "aabb.h"

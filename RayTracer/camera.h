@@ -3,6 +3,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <chrono>
 #include <mutex>
 #include <thread>
 #include <vector>
@@ -119,13 +120,16 @@ public:
 		std::vector<colour> frame_buffer;
 		frame_buffer.resize(image_width * image_height);
 
+		// Start timer to calculate render duration
+		auto start_time = std::chrono::high_resolution_clock::now();
+
 		auto render_scanlines = [&](size_t start, size_t end, unsigned int thread_id) {
 			for (size_t line = start; line < end; line++) {
 				// Using mutex for remaining scanlines logging
-				{
-					std::lock_guard<std::mutex> lock(mtx);
-					std::clog << "\rScanlines remaining [Thread #" << thread_id << "]:" << (end - line) << ' ' << '\n' << std::flush;
-				}
+				//{
+				//	std::lock_guard<std::mutex> lock(mtx);
+				//	std::clog << "\rScanlines remaining [Thread #" << thread_id << "]:" << (end - line) << ' ' << '\n' << std::flush;
+				//}
 				
 				for (unsigned int _x = 0; _x < image_width; _x++) {
 					colour pixel_colour(0.f, 0.f, 0.f);
@@ -148,13 +152,18 @@ public:
 			w.join();
 		}
 
+		// End timer to calculate render duration
+		auto end_time = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration<double>(end_time - start_time).count();
+		std::clog << "\rDone. Render Time: " << duration << "s\n";
+
+		// Save the image output
 		std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 		for (unsigned int _y = 0; _y < image_height; _y++) {
 			for (unsigned int _x = 0; _x < image_width; _x++) {
 				write_colour(std::cout, frame_buffer[_y * image_width + _x]);
 			}
 		}
-		std::clog << "\rDone.\n";
 	}
 };
 

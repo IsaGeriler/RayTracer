@@ -1,3 +1,4 @@
+#include <conio.h>
 #include <iostream>
 
 #include "bvh.h"
@@ -21,8 +22,18 @@ static void scene1() {
 	world.add(std::make_shared<sphere>(point3(0.f, 0.f, -1.2f), 0.5f, material_center));
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.5f, material_left));
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.4f, material_bubble));
-	world.add(std::make_shared<sphere>(point3(1.f, 0.f, -1.f), 0.5f, material_right));
+	world.add(std::make_shared<sphere>(point3(1.f, 0.f, -1.f), 0.5f, material_right));  
+
+    // Start timer to calculate BVH Node Build duration
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    // Create BVH Node
     world = hittable_list(std::make_shared<bvh_node>(world));
+
+    // End timer to calculate BVH Node Build duration
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double>(end_time - start_time).count();
+    std::clog << "\rDone. BVH Node Build Time: " << duration << "s\n";
 
 	// Camera Setup
 	camera cam;
@@ -90,8 +101,18 @@ static void scene2() {
     auto material3 = std::make_shared<metal>(colour(0.7, 0.6, 0.5), 0.0);
     world.add(std::make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
+    // Start timer to calculate BVH Node Build duration
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    // Create BVH Node
     world = hittable_list(std::make_shared<bvh_node>(world));
 
+    // End timer to calculate BVH Node Build duration
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration<double>(end_time - start_time).count();
+    std::clog << "\rDone. BVH Node Build Time: " << duration << "s\n";
+
+    // Camera Setup
     camera cam;
 
     cam.aspect_ratio = 16.0 / 9.0;
@@ -114,4 +135,10 @@ int main(int argc, char** argv) {
 	// Select the desired Scene
 	// scene1();
 	scene2();
+
+    // Putting this line to prevent the console closing down,
+    // as soon as rendering finishes
+    int ch = _getch();
+    std::cout << "Pressed: '" << static_cast<char>(ch) << "'\n";
+    return 0;
 }
