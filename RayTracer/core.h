@@ -9,11 +9,12 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <numbers>
 #include <random>
 
 // Constants
 const float inf = std::numeric_limits<float>::infinity();
-const float pi = 3.1415927f;
+const float pi = std::numbers::pi_v<float>;
 
 // Utility Functions
 inline float random_float() {
