@@ -8,6 +8,8 @@
 #include "material.h"
 #include "sphere.h"
 
+#define ENABLE_BVH true
+
 static void scene1() {
 	// Define Materials
 	std::shared_ptr<material> material_ground = std::make_shared<lambertian>(colour(0.8f, 0.8f, 0.f));
@@ -24,16 +26,18 @@ static void scene1() {
 	world.add(std::make_shared<sphere>(point3(-1.f, 0.f, -1.f), 0.4f, material_bubble));
 	world.add(std::make_shared<sphere>(point3(1.f, 0.f, -1.f), 0.5f, material_right));
 
-    // Start timer to calculate BVH Node Build duration
-    auto start_time = std::chrono::high_resolution_clock::now();
+    #if ENABLE_BVH
+        // Start timer to calculate BVH Node Build duration
+        auto start_time = std::chrono::high_resolution_clock::now();
 
-    // Create BVH Node
-    world = hittable_list(std::make_shared<bvh_node>(world));
+        // Create BVH Node
+        world = hittable_list(std::make_shared<bvh_node>(world));
 
-    // End timer to calculate BVH Node Build duration
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration<double>(end_time - start_time).count();
-    std::clog << "\rDone. BVH Node Build Time: " << duration << "s\n";
+        // End timer to calculate BVH Node Build duration
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration<double>(end_time - start_time).count();
+        std::clog << "\rDone. BVH Node Build Time: " << duration << "s\n";
+    #endif
 
 	// Camera Setup
 	camera cam;
@@ -101,16 +105,18 @@ static void scene2() {
     auto material3 = std::make_shared<metal>(colour(0.7, 0.6, 0.5), 0.0);
     world.add(std::make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
-    // Start timer to calculate BVH Node Build duration
-    auto start_time = std::chrono::high_resolution_clock::now();
+    #if ENABLE_BVH
+        // Start timer to calculate BVH Node Build duration
+        auto start_time = std::chrono::high_resolution_clock::now();
 
-    // Create BVH Node
-    world = hittable_list(std::make_shared<bvh_node>(world));
+        // Create BVH Node
+        world = hittable_list(std::make_shared<bvh_node>(world));
 
-    // End timer to calculate BVH Node Build duration
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration<double>(end_time - start_time).count();
-    std::clog << "\rDone. BVH Node Build Time: " << duration << "s\n";
+        // End timer to calculate BVH Node Build duration
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration<double>(end_time - start_time).count();
+        std::clog << "\rDone. BVH Node Build Time: " << duration << "s\n";
+    #endif
 
     // Camera Setup
     camera cam;

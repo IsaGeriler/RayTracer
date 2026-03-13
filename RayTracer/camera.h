@@ -11,6 +11,8 @@
 #include "hittable.h"
 #include "material.h"
 
+#define ENABLE_MT true
+
 class camera {
 private:
 	unsigned int image_height;
@@ -98,7 +100,6 @@ public:
 	unsigned int image_width = 100;
 	unsigned int samples_per_pixel = 10;
 	unsigned int max_depth = 10;  // Maximum number of ray bounces into scene
-	std::mutex mtx;
 
 	float vertical_fov = 90.f;  // Vertical field of view
 	point3 lookfrom = point3(0.f, 0.f, 0.f);
@@ -108,56 +109,72 @@ public:
 	float defocus_angle = 0.f;
 	double focus_dist = 10.f;
 
+	// Mutex, framebuffer and thread vectors
+	std::mutex mtx;
+	std::vector<colour> frame_buffer;
+	std::vector<std::thread> workers;
+
 	void render(const hittable& world) {
 		initialize();
-		
-		// Multithreading
-		unsigned int threads = std::thread::hardware_concurrency();
-		if (threads == 0) threads = 6;
-		unsigned int rows_per_thread = image_height / threads;
-
-		std::vector<std::thread> workers;
-		std::vector<colour> frame_buffer;
 		frame_buffer.resize(image_width * image_height);
 
 		// Start timer to calculate render duration
 		auto start_time = std::chrono::high_resolution_clock::now();
+		#if ENABLE_MT
+			// Multithreading
+			unsigned int threads = std::thread::hardware_concurrency();
+			if (threads == 0) threads = 6;
+			unsigned int rows_per_thread = image_height / threads;
 
-		auto render_scanlines = [&](size_t start, size_t end, unsigned int thread_id) {
-			for (size_t line = start; line < end; line++) {
-				// Using mutex for remaining scanlines logging
-				//{
-				//	std::lock_guard<std::mutex> lock(mtx);
-				//	std::clog << "\rScanlines remaining [Thread #" << thread_id << "]:" << (end - line) << ' ' << '\n' << std::flush;
-				//}
-				
+			auto render_scanlines = [&](size_t start, size_t end, unsigned int thread_id) {
+				for (size_t line = start; line < end; line++) {
+					// Using mutex for remaining scanlines (logging reasons only, slows performance by 5%)
+					{
+						std::lock_guard<std::mutex> lock(mtx);
+						std::clog << "\r-- Log: Scanlines remaining [Thread #" << thread_id << "]:" << (end - line) << ' ' << "--" << '\n' << std::flush;
+					}
+
+					for (unsigned int _x = 0; _x < image_width; _x++) {
+						colour pixel_colour(0.f, 0.f, 0.f);
+						for (unsigned int sample = 0; sample < samples_per_pixel; sample++) {
+							ray r = get_ray(_x, line);
+							pixel_colour += ray_colour(r, max_depth, world);
+						}
+						frame_buffer[line * image_width + _x] = pixel_samples_scale * pixel_colour;
+					}
+				}
+			};
+
+			for (unsigned int t = 0; t < threads; t++) {
+				size_t start = t * rows_per_thread;
+				size_t end = (t == threads - 1) ? image_height : (start + rows_per_thread);
+				workers.emplace_back(render_scanlines, start, end, t);
+			}
+
+			for (auto& w : workers) {
+				w.join();
+			}
+		#else
+			for (unsigned int _y = 0; _y < image_height; _y++) {
+				// Remaining scanlines (logging reasons only)
+				std::clog << "\r-- Log: Scanlines remaining:" << image_height - _y << ' ' << "--" << '\n' << std::flush;
 				for (unsigned int _x = 0; _x < image_width; _x++) {
 					colour pixel_colour(0.f, 0.f, 0.f);
 					for (unsigned int sample = 0; sample < samples_per_pixel; sample++) {
-						ray r = get_ray(_x, line);
+						ray r = get_ray(_x, _y);
 						pixel_colour += ray_colour(r, max_depth, world);
 					}
-					frame_buffer[line * image_width + _x] = pixel_samples_scale * pixel_colour;
+					frame_buffer[_y * image_width + _x] = pixel_samples_scale * pixel_colour;
 				}
 			}
-		};
-
-		for (unsigned int t = 0; t < threads; t++) {
-			size_t start = t * rows_per_thread;
-			size_t end = (t == threads - 1) ? image_height : (start + rows_per_thread);
-			workers.emplace_back(render_scanlines, start, end, t);
-		}
-		
-		for (auto& w : workers) {
-			w.join();
-		}
+		#endif
 
 		// End timer to calculate render duration
 		auto end_time = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration<double>(end_time - start_time).count();
 		std::clog << "\rDone. Render Time: " << duration << "s\n";
 
-		// Save the image output
+		// Save the image output (later extend to .png/.jpg with stb_lib.h instead of using .ppm)
 		std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 		for (unsigned int _y = 0; _y < image_height; _y++) {
 			for (unsigned int _x = 0; _x < image_width; _x++) {
