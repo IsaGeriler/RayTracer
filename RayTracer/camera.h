@@ -128,7 +128,7 @@ public:
 
 			auto render_scanlines = [&](size_t start, size_t end, unsigned int thread_id) {
 				for (size_t line = start; line < end; line++) {
-					// Using mutex for remaining scanlines (logging reasons only, slows performance by 5%)
+					// Using mutex for remaining scanlines (logging reasons only, slows performance by 5-10%)
 					{
 						std::lock_guard<std::mutex> lock(mtx);
 						std::clog << "\r-- Log: Scanlines remaining [Thread #" << thread_id << "]:" << (end - line) << ' ' << "--" << '\n' << std::flush;
