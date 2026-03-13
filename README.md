@@ -21,16 +21,16 @@ The following benchmarks were recorded rendering the high-density Book 1 final s
 
 ---
 
-*Benchmarks recorded on an Intel Core Ultra 7 155H. To maximize performance without being bottlenecked by hardware scheduling, thread count was dynamically set via std::thread::hardware_concurrency. For optimal results on this specific architecture, utilizing the 6 Performance (P) cores is recommended over the Efficiency (E) or Low-Power (LP) cores.)*
+*Benchmarks recorded on an Intel Core Ultra 7 155H, with VisualStudio 2022 being configured on Release mode with -O2 compiler optimisation. To maximize performance without being bottlenecked by hardware scheduling, thread count was dynamically set via std::thread::hardware_concurrency. For optimal results on this specific architecture, utilizing the 6 Performance (P) cores is recommended over the Efficiency (E) or Low-Power (LP) cores.)*
 
-| Architecture | Sequential | Multithreaded |
+| Algorithm | Sequential | Multithreaded |
 | :--- | :--- | :--- |
-| **Linear Intersection - $O(N)$** | 3638.43 seconds (~60 mins) | 499.92 seconds |
-| **BVH Traversal - $O(\log N)$** | 450.33 seconds | **84.64 seconds** |
+| **Linear Intersection - $O(N)$** | 3638.43 seconds (1 hour 38 seconds 430 milliseconds) | 499.92 seconds (8 minutes 19 seconds 920 milliseconds) |
+| **BVH Traversal - $O(\log{N})$** | 450.33 seconds (7 minutes 30 seconds 330 milliseconds) | **84.64 seconds (1 minute 24 seconds 640 milliseconds)** |
 
 ### Key Takeaways:
-1. **Algorithmic Optimization > Hardware Brute Force:** A single-threaded BVH implementation (450s) actively outperformed a fully multithreaded brute-force approach (~500s).
-2. **Hardware Scaling:** After the $O(\log N)$ spatial optimization, multithreading yielded a highly efficient **~5.3x performance speedup** (~450s down to ~84s).
+1. **Algorithmic Optimization > Hardware Brute Force:** A sequential BVH implementation (~450s) actively outperformed a fully multithreaded brute-force approach (~500s).
+2. **Hardware Scaling:** After the $O(\log{N})$ spatial optimization, multithreading yielded a highly efficient **~5.3x performance speedup** (~450s down to ~84s).
 3. **Total Optimization:** The combination of acceleration structure and hardware concurrency reduced the render time from over an hour to just 1.5 minutes, providing **~43x overall speedup**.
 
 ---
