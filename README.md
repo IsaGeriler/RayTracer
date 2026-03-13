@@ -26,7 +26,7 @@ The following benchmarks were recorded rendering the high-density Book 1 final s
 | Architecture | Sequential | Multithreaded |
 | :--- | :--- | :--- |
 | **Linear Intersection - $O(N)$** | 3638.43 seconds (~60 mins) | 499.92 seconds |
-| **BVH Traversal - $O(\log N)$** | 450.00 seconds | **84.64 seconds** |
+| **BVH Traversal - $O(\log N)$** | 450.33 seconds | **84.64 seconds** |
 
 ### Key Takeaways:
 1. **Algorithmic Optimization > Hardware Brute Force:** A single-threaded BVH implementation (450s) actively outperformed a fully multithreaded brute-force approach (~500s).
