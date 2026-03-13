@@ -6,22 +6,24 @@ An ongoing multithreaded offline ray tracer (CPU-based), written in C++, focusin
 
 ## Current State
 ![banner](https://github.com/user-attachments/assets/886f830a-5014-4cce-b792-3abeabd31d43)
-*Figure 1 - Evolution of the Ray Tracer.*
-
-![RTMB](https://github.com/user-attachments/assets/8f008cc9-c08b-4273-821d-bc377bc1d84c)
-*Figure 2 - Temporal Rendering (Motion Blur) integrated with BVH and hardware concurrency.*
+<div align="center">Figure 1 - Evolution of the Ray Tracer.</div>
 
 ---
+
+![RTMB](https://github.com/user-attachments/assets/8f008cc9-c08b-4273-821d-bc377bc1d84c)
+<div align="center">Figure 2 - Temporal Rendering (Motion Blur) integrated with BVH and hardware concurrency.</div>
 
 ## Performance Benchmarks: Algorithmic vs. Hardware Scaling
 The following benchmarks were recorded rendering the high-density Book 1 final scene (approx. 500 primitives) to demonstrate the performance impact of algorithmic spatial sorting compared to raw hardware multithreading.
 
 ![RTOWKNDFinal](https://github.com/user-attachments/assets/0652f0c1-b2fe-4eba-b58e-adc1bf963da2)
-*Figure 3 - High-density benchmarking scene.*
+<div align="center">Figure 3 - High-density benchmarking scene.</div>
+
+---
 
 *Benchmarks recorded on an Intel Core Ultra 7 155H. To maximize performance without being bottlenecked by hardware scheduling, thread count was dynamically set via std::thread::hardware_concurrency. For optimal results on this specific architecture, utilizing the 6 Performance (P) cores is recommended over the Efficiency (E) or Low-Power (LP) cores.)*
 
-| Architecture | Sequential (1 Thread) | Multithreaded |
+| Architecture | Sequential | Multithreaded |
 | :--- | :--- | :--- |
 | **Linear Intersection - $O(N)$** | 3638.43 seconds (~60 mins) | 499.92 seconds |
 | **BVH Traversal - $O(\log N)$** | 450.00 seconds | **84.64 seconds** |
